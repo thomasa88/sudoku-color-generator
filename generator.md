@@ -1,0 +1,6 @@
+<div id="generator"></div>
+<script src="/sudoku.js"></script>
+<script>
+var div = document.getElementById('generator')'
+generator.innerHTML = "OK";
+</script>
