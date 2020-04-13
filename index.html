@@ -26,7 +26,7 @@
     </div>
     <div>
       <p>
-        Created by Thomas Axelsson 2020.
+        Created by Thomas Axelsson 2020. Licensed under (<a href="LICENSE">GPL v3</a>).
       </p>
       <p>
         Sudoku generator by David J. Rager (<a href="sudoku.js">License information</a>)
@@ -55,6 +55,10 @@
   	let picker = document.createElement('input');
         picker.type = 'color';
         picker.value = DEFAULT_COLORS[i+1];
+        picker.value = localStorage.getItem('color' + (i+1)) || DEFAULT_COLORS[i+1];
+        picker.onchange = function() {
+          localStorage.setItem('color' + (i+1), picker.value);
+        };
         colorDiv.appendChild(picker);
       }
       let colorReset = document.createElement('input');
@@ -83,10 +87,9 @@
       function resetColors() {
         for (let i = 0; i < 9; i++) {
           colorDiv.children[i].value = DEFAULT_COLORS[i+1];
+          colorDiv.children[i].onchange();
         }
       }
-      
-      
       
       function generate() {
   	boardDiv.innerHTML = 'Generating...';
