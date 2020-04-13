@@ -1,6 +1,102 @@
-<div id="generator"></div>
-<script src="sudoku.js"></script>
-<script>
-  var div = document.getElementById('generator');
-  generator.innerHTML = "OK";
-</script>
+<html>
+  <title>Sudoku Color Generator</title>
+  <head>
+    <style>
+      table, td { border-color: black; border-style: solid; }
+      table { border-spacing: 0px; border-width: 3px; }
+      td { border-width: 1px; width: 20px; height: 20px; text-align: center; 
+         }
+      tr:nth-child(3n):nth-child(-n+6) td { border-bottom-width: 4px; }
+      td:nth-child(3n):nth-child(-n+6) { border-right-width: 4px; }
+      div { margin-bottom: 10px; }
+    </style>
+  </head>
+  <body>
+    <h1></h1>
+    <div id="colors"></div>
+    <div>
+      <select id="level">
+        <option value="0">Easy</option>
+        <option value="1" selected>Medium</option>
+        <option value="2">Hard</option>
+      </select>
+      <input type="button" value="Generate!" onclick="generate()">
+    </div>
+    <div id="board">
+    </div>
+    <div>
+      <p>
+        Created by Thomas Axelsson 2020.
+      </p>
+      <p>
+        Sudoku generator by David J. Rager (<a href="sudoku.js">License information</a>)
+      </p>
+    </div>
+    <script src="sudoku.js"></script>
+    <script>
+      const DEFAULT_COLORS = [
+        '<ZERO>',
+  	'#ff0000',
+        '#ff8000',
+        '#ffff00',
+        '#00ff00',
+        '#008000',
+        '#80ffff',
+        '#0000a0',
+        '#ff80ff',
+        '#000040',
+      ];
+      var div = document.getElementById('generator');
+      var boardDiv = document.getElementById('board');
+      var colorDiv = document.getElementById('colors');
+      var levelSelect = document.getElementById('level');
+
+      for (let i = 0; i < 9; i++) {
+  	let picker = document.createElement('input');
+        picker.type = 'color';
+        picker.value = DEFAULT_COLORS[i+1];
+        colorDiv.appendChild(picker);
+      }
+      let colorReset = document.createElement('input');
+      colorReset.type = 'button';
+      colorReset.value = 'Reset colors';
+      colorReset.onclick = resetColors;
+      colorDiv.appendChild(colorReset);
+
+      function populateTable() {
+  	boardDiv.innerHTML = '';
+        let table = document.createElement('table');
+        for (let row = 0; row < 9; row++) {
+          let rowTag = table.insertRow(-1);
+          for (let col = 0; col < 9; col++) {
+            let colTag = rowTag.insertCell(-1);
+            let val = sudoku.matrix[row * 9 + col];
+            if (val != 0) {
+              colTag.innerText = val;
+              colTag.style.backgroundColor = colorDiv.children[val-1].value;
+            }
+          }
+        }
+        boardDiv.appendChild(table);
+      }
+      
+      function resetColors() {
+        for (let i = 0; i < 9; i++) {
+          colorDiv.children[i].value = DEFAULT_COLORS[i+1];
+        }
+      }
+      
+      
+      
+      function generate() {
+  	boardDiv.innerHTML = 'Generating...';
+        sudoku.level = parseInt(levelSelect.value);
+        sudoku.newGame();
+      }
+
+      sudoku = new Sudoku();
+      sudoku.done = populateTable;
+
+      generate();
+      </script>
+</body>
